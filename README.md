@@ -197,122 +197,122 @@ qt(0.025, df=n-2)<br>
 
 There was no empirical evidence against H0 at significance level 0.05.<br>
 
-p-value of the test
-2*min(pt(statistic.t, n-2), 1-pt(statistic.t, n-2))
-[1] 0.1977807
+p-value of the test<br>
+2*min(pt(statistic.t, n-2), 1-pt(statistic.t, n-2))<br>
+[1] 0.1977807<br>
 
-Then I confirmed the previous result.
-Predictions on a new dataset
+Then I confirmed the previous result.<br>
+Predictions on a new dataset<br>
 
-predict(model, newdata=data.frame(list(lstat=c(5, 10, 25))))
+predict(model, newdata=data.frame(list(lstat=c(5, 10, 25))))<br>
 
-1 2 3
-29.80359 25.05335 10.80261
+1 2 3<br>
+29.80359 25.05335 10.80261<br>
 
-Predictions with prediction interval
-predict(model, newdata=data.frame(list(lstat=c(5, 10, 25))), interval='prediction')
+Predictions with prediction interval<br>
+predict(model, newdata=data.frame(list(lstat=c(5, 10, 25))), interval='prediction')<br>
 
-Then I considered the residuals in order to judge the model.
-res <- residuals(model)
+Then I considered the residuals in order to judge the model.<br>
+res <- residuals(model)<br>
 
-Graphical evaluation of the residuals
+Graphical evaluation of the residuals<br>
 
-par(mfrow=c(2,2))
-hist(res, prob=TRUE)
-plot(res, pch=19, cex=0.5, ylab='Residuals')
-abline(h=0, lty=2)
-plot(est.values, res, pch=19, cex=0.5, xlab='Estimated values', ylab='Residuals')
-abline(h=0, lty=2)
-plot(Boston$lstat, res, ylab='Residuals', xlab='% of lower status of the population', pch=19, cex=0.5)
-abline(h=0, lty=2)
+par(mfrow=c(2,2))<br>
+hist(res, prob=TRUE)<br>
+plot(res, pch=19, cex=0.5, ylab='Residuals')<br>
+abline(h=0, lty=2)<br>
+plot(est.values, res, pch=19, cex=0.5, xlab='Estimated values', ylab='Residuals')<br>
+abline(h=0, lty=2)<br>
+plot(Boston$lstat, res, ylab='Residuals', xlab='% of lower status of the population', pch=19, cex=0.5)<br>
+abline(h=0, lty=2)<br>
 
 ![Residuals Boston Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/06bb7bf4-9fb0-4c40-9a1c-9822043b3406)
 
-Graphical evaluation of the standardized residuals
+Graphical evaluation of the standardized residuals<br>
 
-par(mfrow=c(2,2))
-standard.res <- rstandard(model)
-hist(standard.res, prob=TRUE, xlab='Standardized residuals')
-plot(standard.res, pch=19, cex=0.5, ylab='Standardized residuals')
-abline(h=0, lty=2)
-plot(est.values, standard.res, pch=19, cex=0.5, xlab='Estimated values', ylab='Standardized residuals')
-abline(h=0, lty=2)
-plot(Boston$lstat, standard.res, ylab='Standardized residuals', xlab='% of lower status of the population', pch=19, cex=0.5)
-abline(h=0, lty=2)
+par(mfrow=c(2,2))<br>
+standard.res <- rstandard(model)<br>
+hist(standard.res, prob=TRUE, xlab='Standardized residuals')<br>
+plot(standard.res, pch=19, cex=0.5, ylab='Standardized residuals')<br>
+abline(h=0, lty=2)<br>
+plot(est.values, standard.res, pch=19, cex=0.5, xlab='Estimated values', ylab='Standardized residuals')<br>
+abline(h=0, lty=2)<br>
+plot(Boston$lstat, standard.res, ylab='Standardized residuals', xlab='% of lower status of the population', pch=19, cex=0.5)<br>
+abline(h=0, lty=2)<br>
 
 ![Standardized Residuals Boston RplotRplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/a49b262f-12e7-4956-9a50-110a43dad6ae)
 
 
 
-Graphical evaluation of the accuracy of the model provided by R
-par(mfrow=c(2,2))
-plot(model)
+Graphical evaluation of the accuracy of the model provided by R<br>
+par(mfrow=c(2,2))<br>
+plot(model)<br>
 
 ![Model Accuracy Check Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/f0e60cc5-452d-4630-981c-617194323027)
 
-plot(model, 4)
+plot(model, 4)<br>
 
 ![Boston Cook's Distance Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/7d0a3489-8737-4615-991e-66b5afcd1fae)
 
-There were "suspicious" values that R indicates through the corresponding row number in the dataset, but they were not anomalous on the basis of the Cook’s distance (contour is zero).
+There were "suspicious" values that R indicates through the corresponding row number in the dataset, but they were not anomalous on the basis of the Cook’s distance (contour is zero).<br>
 
-## 1.1 Multiple linear regression model
+## 1.1 Multiple linear regression model<br>
 
-Considered variable crim that include the information about per capita crime rate by town.
-Relationship between crim and medv
+Considered variable crim that include the information about per capita crime rate by town.<br>
+Relationship between crim and medv<br>
 
-plot(Boston$crim, Boston$medv, ylab='Median value', xlab='Crime', pch=19, cex=0.5)
+plot(Boston$crim, Boston$medv, ylab='Median value', xlab='Crime', pch=19, cex=0.5)<br>
 
 
 ![Multiple Linear Regression Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/95d8bfdd-30c1-47b5-adac-5db6912c907a)
 
 
-Estimation of the model
-                      medv = β0 + β1lstat + β2crim + ε
+Estimation of the model<br>
+                      medv = β0 + β1lstat + β2crim + ε<br>
                       
-model.mv <- lm(medv ~ lstat + crim, data=Boston)
-summary(model.mv)
+model.mv <- lm(medv ~ lstat + crim, data=Boston)<br>
+summary(model.mv)<br>
 
-The significance of β2 was questionable.
+The significance of β2 was questionable.<br>
 
-## 1.2 Model with polynomials
+## 1.2 Model with polynomials<br>
 
-Considered the model without crim. Given the dispersion plot between medv and lstat I tried to insert a quadratic term, that is, I estimated model
-                     medv = β0 + β1lstat + β2lstat2 + ε
+Considered the model without crim. Given the dispersion plot between medv and lstat I tried to insert a quadratic term, that is, I estimated model<br>
+                     medv = β0 + β1lstat + β2lstat2 + ε<br>
                      
-model2 <- lm(medv ~ lstat + I(lstat^2), data=Boston)
-or
-model2 <- update(model, .~.+I(lstat^2))
-summary(model2)
+model2 <- lm(medv ~ lstat + I(lstat^2), data=Boston)<br>
+or<br>
+model2 <- update(model, .~.+I(lstat^2))<br>
+summary(model2)<br>
 
-The new covariate had an associated coefficient significantly different from 0.
-Compared the two models, with and without the quadratic term, using the F statistic
+The new covariate had an associated coefficient significantly different from 0.<br>
+Compared the two models, with and without the quadratic term, using the F statistic<br>
 
-rss0 <- (6.216^2)*504
-or
-sum(model$residuals^2)
-rss <- (5.524^2)*503
-f <- (rss0 - rss)/rss * (503/1)
-f
-[1] 135.183
-qf(0.95, 1, 503)
-[1] 3.860012
-There is empirical evidence against H0 that suggests
-to move to the simplest model with a single covariate
-p-value
-1-pf(f, 1, 503)
-[1] 0
-the p-value confirms the rejection of H0
+rss0 <- (6.216^2)*504<br>
+or<br>
+sum(model$residuals^2)<br>
+rss <- (5.524^2)*503<br>
+f <- (rss0 - rss)/rss * (503/1)<br>
+f<br>
+[1] 135.183<br>
+qf(0.95, 1, 503)<br>
+[1] 3.860012<br>
+There is empirical evidence against H0 that suggests<br>
+to move to the simplest model with a single covariate<br>
+p-value<br>
+1-pf(f, 1, 503)<br>
+[1] 0<br>
+the p-value confirms the rejection of H0<br>
 
-In R I used function anova()
+In R I used function anova()<br>
 
-anova(model, model2)
+anova(model, model2)<br>
 
-Note that in this case statistic F corresponded to the square of statistic t for the significance of the coefficient associated to the square of lstat in model2.
-Residuals of the updated model
+Note that in this case statistic F corresponded to the square of statistic t for the significance of the coefficient associated to the square of lstat in model2.<br>
+Residuals of the updated model<br>
 
-par(mfrow=c(2,2))
-plot(model2)
+par(mfrow=c(2,2))<br>
+plot(model2)<br>
 
 
 
