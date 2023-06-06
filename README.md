@@ -1,16 +1,16 @@
 # BostonHousingDataSet_R_Analysis
-Start the R session and make sure there are no objects in the workspace
+First I checked there were any objects in the workspace
 
 ls()
-Eventually remove existing objects
+Eventually removed existing objects
 rm(list=ls())
 
-Upload the Boston dataset, that is inside library (or package) MASS.
+Uploaded the Boston dataset, that is inside library (or package) MASS.
 library(MASS)
 data(Boston)
 
-The dataset contains information about 506 houses in the area of Boston. For other
-information about the dataset we can use the help online
+The dataset contained information about 506 houses in the area of Boston. For other
+information about the dataset I used the help online
 
 ?Boston
 
@@ -18,13 +18,13 @@ or
 
 help(Boston)
 
-First look at the variables...start with the summary of the variables in the dataset (not
+First looked at the variables...started with the summary of the variables in the dataset (not
 visualized here for space reasons)
 
 summary(Boston)
 
-Look at the information about the first 3 houses. We can access them through the square
-brackets, that are used to access the elements of vectors, matrices, datasets.
+Looked at the information about the first 3 houses. Then I accessed them through the square
+brackets, that were used to access the elements of vectors, matrices, datasets.
 
 Boston[1:3,]
 crim zn indus chas nox rm age dis rad tax ptratio black lstat medv
@@ -35,25 +35,23 @@ crim zn indus chas nox rm age dis rad tax ptratio black lstat medv
 dim(Boston)
 [1] 506 14
 
-For convenience we can assign the information about the number of houses n to an object
+For convenience I assigned the information about the number of houses n to an object
 
 n <- nrow(Boston)
 n
 [1] 506
 
-Consider only variables
+Considered only variables
  • medve: median values of the houses (1000 $)
  • lstat: lower status of the population (percent)
-We want to evaluate whether and how the value medve can be predicted using lstat.
-Start with some characteristics about the value
+After that I wanted to evaluate whether and how the value medve can be predicted using lstat.
+Started with some characteristics about the value
 
 summary(Boston$medv)
 Min. 1st Qu. Median Mean 3rd Qu. Max.
 5.00 17.02 21.20 22.53 25.00 50.00
 
 histogram of the distribution
-xlab=graphical option to assign a label to the x-axis
-main: title of the graph
 hist(Boston$medv, prob=TRUE, xlab='Median value', main='Histogram')
 
 ![Medv Histogram Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/4b0d5f48-fbeb-470d-9048-682c5840a027)
@@ -69,18 +67,17 @@ plot(Boston$medv, Boston$lstat, main='Dispersion plot', xlab='% of lower status 
 
 ![Dispersion plot Medv, lstat Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/169d243f-e348-4d54-98a4-f812f4eaeb2c)
 
-The plot shows an inverse relationship between the variables.
-Correlation between the variables
+The plot showed an inverse relationship between the variables.
+Then checked correlation between the variables
 
 cor(Boston$medv, Boston$lstat)
 [1] -0.7376627
 
-What can we conclude?
-Try to estimate a simple linear regression model
+Then I tried to estimate a simple linear regression model
 
 medv = β0 + β1lstat + ε
 
-Construct it step by step
+Constructed it step by step
 
 beta1 <- cov(Boston$medv, Boston$lstat)/var(Boston$lstat)
 beta1
@@ -94,11 +91,11 @@ The variance of lstat
 mean((Boston$lstat- mean(Boston$lstat))^2)/n
 [1] 0.100581
 
-is equal to
+was equal to
 mean(Boston$lstat^2)-(mean(Boston$lstat)^2)
 [1] 50.89398
 
-and note that it is equal to
+and note that it was equal to
 var(Boston$lstat)*(n-1)/n
 [1] 50.89398
 
@@ -106,20 +103,21 @@ as R computes variances and covariances by dividing them by n − 1 instead of n
 
 model <- lm(medv ~ lstat, data=Boston)
 
-The output provides an object (model) with many details.
+The output provided an object (model) with many details.
 
 basic information: estimate of the coefficients
 model
 
-Much of the information can be visualised through command summary
+Much of the information were visualised through command summary
 summary(model)
 
-The output contains:
+The output contained:
+
 • information about residuals
 • estimate, standard error, significance test on the parameters
 • information about the accuracy of the model
 • test F for the significance of all the parameters
-How can we comment on the output?
+
 Other information in model
 
 names(model)
@@ -127,7 +125,7 @@ names(model)
 [6] "assign" "qr" "df.residual" "xlevels" "call"
 [11] "terms" "model"
 
-How can we access the components?
+Then I  accessed the components of the model as follows:
 
 model$coefficients
  (Intercept) lstat
@@ -172,7 +170,7 @@ c(beta1-qt(0.975, df=n-2)*se[2], beta1+qt(0.975, df=n-2)*se[2])
 lstat lstat
 -1.0261482 -0.8739505
 
-Given the large values of n, the standard normal approximation can be used as wel
+Given the large values of n, the standard normal approximation can be used as well
 
 c(beta1-qnorm(0.975)*se[2], beta1+qnorm(0.975)*se[2])
 lstat lstat
@@ -185,7 +183,7 @@ confint(model)
 2.5 % 97.5 %
 (Intercept) 33.448457 35.6592247
 lstat -1.026148 -0.8739505
-change the confidence level, for example 90%
+changed the confidence level, for example 90%
 confint(model, level=0.90)
 5 % 95 %
 (Intercept) 33.626697 35.4809847
@@ -200,13 +198,13 @@ lstat
 qt(0.025, df=n-2)
 [1] -1.964682
 
-There is no empirical evidence against H0 at significance level 0.05.
+There was no empirical evidence against H0 at significance level 0.05.
 
 p-value of the test
 2*min(pt(statistic.t, n-2), 1-pt(statistic.t, n-2))
 [1] 0.1977807
 
-We confirm the previous result.
+Then I confirmed the previous result.
 Predictions on a new dataset
 
 predict(model, newdata=data.frame(list(lstat=c(5, 10, 25))))
@@ -214,10 +212,10 @@ predict(model, newdata=data.frame(list(lstat=c(5, 10, 25))))
 1 2 3
 29.80359 25.05335 10.80261
 
-# Predictions with prediction interval
+Predictions with prediction interval
 predict(model, newdata=data.frame(list(lstat=c(5, 10, 25))), interval='prediction')
 
-But, how can we judge our model? Consider the residuals.
+Then I considered the residuals in order to judge the model.
 res <- residuals(model)
 
 Graphical evaluation of the residuals
@@ -247,7 +245,7 @@ abline(h=0, lty=2)
 
 ![Standardized Residuals Boston RplotRplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/a49b262f-12e7-4956-9a50-110a43dad6ae)
 
-Comments?
+
 
 Graphical evaluation of the accuracy of the model provided by R
 par(mfrow=c(2,2))
@@ -259,11 +257,11 @@ plot(model, 4)
 
 ![Boston Cook's Distance Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/7d0a3489-8737-4615-991e-66b5afcd1fae)
 
-Are there any anomalies? There are "suspicious" values that R indicates through the corresponding row number in the dataset, but they are not anomalous on the basis of the Cook’s distance (contour is zero).
+There were "suspicious" values that R indicates through the corresponding row number in the dataset, but they were not anomalous on the basis of the Cook’s distance (contour is zero).
 
 ## 1.1 Multiple linear regression model
 
-Consider variable crim that includes the information about per capita crime rate by town.
+Considered variable crim that include the information about per capita crime rate by town.
 Relationship between crim and medv
 
 plot(Boston$crim, Boston$medv, ylab='Median value', xlab='Crime', pch=19, cex=0.5)
@@ -278,12 +276,11 @@ Estimation of the model
 model.mv <- lm(medv ~ lstat + crim, data=Boston)
 summary(model.mv)
 
-The significance of β2 is questionable.
-How do we interpret the parameter estimates? How is medv related to lstat?
+The significance of β2 was questionable.
 
 ## 1.2 Model with polynomials
 
-Consider the model without crim. Given the dispersion plot between medv and lstat we can try to insert a quadratic term, that is, we estimate model
+Considered the model without crim. Given the dispersion plot between medv and lstat I tried to insert a quadratic term, that is, I estimated model
                      medv = β0 + β1lstat + β2lstat2 + ε
                      
 model2 <- lm(medv ~ lstat + I(lstat^2), data=Boston)
@@ -291,8 +288,8 @@ or
 model2 <- update(model, .~.+I(lstat^2))
 summary(model2)
 
-The new covariate has an associated coefficient significantly different from 0.
-Compare the two models, with and without the quadratic term, using the F statistic
+The new covariate had an associated coefficient significantly different from 0.
+Compared the two models, with and without the quadratic term, using the F statistic
 
 rss0 <- (6.216^2)*504
 or
@@ -310,11 +307,11 @@ p-value
 [1] 0
 the p-value confirms the rejection of H0
 
-In R we can use function anova()
+In R I used function anova()
 
 anova(model, model2)
 
-Note that in this case statistic F corresponds to the square of statistic t for the significance of the coefficient associated to the square of lstat in model2.
+Note that in this case statistic F corresponded to the square of statistic t for the significance of the coefficient associated to the square of lstat in model2.
 Residuals of the updated model
 
 par(mfrow=c(2,2))
