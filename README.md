@@ -1,153 +1,150 @@
 # BostonHousingDataSet_R_Analysis
-First I checked there were any objects in the workspace
+First I checked there were any objects in the workspace<br>
 
-ls()
-Eventually removed existing objects
-rm(list=ls())
+ls()<br>
+Eventually removed existing objects<br>
+rm(list=ls())<br>
 
-Uploaded the Boston dataset, that is inside library (or package) MASS.
-library(MASS)
-data(Boston)
+Uploaded the Boston dataset, that is inside library (or package) MASS.<br>
+library(MASS)<br>
+data(Boston)<br>
 
-The dataset contained information about 506 houses in the area of Boston. For other
-information about the dataset I used the help online
+The dataset contained information about 506 houses in the area of Boston. For other information about the dataset I used the help online<br>
 
-?Boston
+?Boston<br>
 
-or
+or<br>
 
-help(Boston)
+help(Boston)<br>
 
-First looked at the variables...started with the summary of the variables in the dataset (not
-visualized here for space reasons)
+First looked at the variables...started with the summary of the variables in the dataset (not visualized here for space reasons)<br>
 
-summary(Boston)
+summary(Boston)<br>
 
-Looked at the information about the first 3 houses. Then I accessed them through the square
-brackets, that were used to access the elements of vectors, matrices, datasets.
+Looked at the information about the first 3 houses. Then I accessed them through the square brackets, that were used to access the elements of vectors, matrices, datasets.<br>
 
-Boston[1:3,]
-crim zn indus chas nox rm age dis rad tax ptratio black lstat medv
-1 0.00632 18 2.31 0 0.538 6.575 65.2 4.0900 1 296 15.3 396.90 4.98 24.0
-2 0.02731 0 7.07 0 0.469 6.421 78.9 4.9671 2 242 17.8 396.90 9.14 21.6
-3 0.02729 0 7.07 0 0.469 7.185 61.1 4.9671 2 242 17.8 392.83 4.03 34.7
+Boston[1:3,]<br>
+crim zn indus chas nox rm age dis rad tax ptratio black lstat medv<br>
+1 0.00632 18 2.31 0 0.538 6.575 65.2 4.0900 1 296 15.3 396.90 4.98 24.0<br>
+2 0.02731 0 7.07 0 0.469 6.421 78.9 4.9671 2 242 17.8 396.90 9.14 21.6<br>
+3 0.02729 0 7.07 0 0.469 7.185 61.1 4.9671 2 242 17.8 392.83 4.03 34.7<br>
 
-dim(Boston)
-[1] 506 14
+dim(Boston)<br>
+[1] 506 14<br>
 
-For convenience I assigned the information about the number of houses n to an object
+For convenience I assigned the information about the number of houses n to an object<br>
 
-n <- nrow(Boston)
-n
-[1] 506
+n <- nrow(Boston)<br>
+n<br>
+[1] 506<br>
 
-Considered only variables
- • medve: median values of the houses (1000 $)
- • lstat: lower status of the population (percent)
-After that I wanted to evaluate whether and how the value medve can be predicted using lstat.
-Started with some characteristics about the value
+Considered only variables<br>
+ • medve: median values of the houses (1000 $)<br>
+ • lstat: lower status of the population (percent)<br>
+After that I wanted to evaluate whether and how the value medve can be predicted using lstat.<br>
+Started with some characteristics about the value<br>
 
-summary(Boston$medv)
-Min. 1st Qu. Median Mean 3rd Qu. Max.
-5.00 17.02 21.20 22.53 25.00 50.00
+summary(Boston$medv)<br>
+Min. 1st Qu. Median Mean 3rd Qu. Max.<br>
+5.00 17.02 21.20 22.53 25.00 50.00<br>
 
-histogram of the distribution
-hist(Boston$medv, prob=TRUE, xlab='Median value', main='Histogram')
+histogram of the distribution<br>
+hist(Boston$medv, prob=TRUE, xlab='Median value', main='Histogram')<br>
 
 ![Medv Histogram Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/4b0d5f48-fbeb-470d-9048-682c5840a027)
 
-boxplot of the distribution
-boxplot(Boston$medv, xlab='Median value', main='Boxplot' )
+boxplot of the distribution<br>
+boxplot(Boston$medv, xlab='Median value', main='Boxplot' )<br>
 
 ![Boxplot Medv Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/6d9ad0ef-e2e9-4614-882a-88aef546b56e)
 
-Graphical evaluation of the relationship between medv and lstat
+Graphical evaluation of the relationship between medv and lstat<br>
 
-plot(Boston$medv, Boston$lstat, main='Dispersion plot', xlab='% of lower status of the population', ylab='Median value', pch=19, cex=0.5)
+plot(Boston$medv, Boston$lstat, main='Dispersion plot', xlab='% of lower status of the population', ylab='Median value', pch=19, cex=0.5)<br>
 
 ![Dispersion plot Medv, lstat Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/169d243f-e348-4d54-98a4-f812f4eaeb2c)
 
-The plot showed an inverse relationship between the variables.
-Then checked correlation between the variables
+The plot showed an inverse relationship between the variables.<br>
+Then checked correlation between the variables<br>
 
-cor(Boston$medv, Boston$lstat)
-[1] -0.7376627
+cor(Boston$medv, Boston$lstat)<br>
+[1] -0.7376627<br>
 
-Then I tried to estimate a simple linear regression model
+Then I tried to estimate a simple linear regression model<br>
 
-medv = β0 + β1lstat + ε
+medv = β0 + β1lstat + ε<br>
 
-Constructed it step by step
+Constructed it step by step<br>
 
-beta1 <- cov(Boston$medv, Boston$lstat)/var(Boston$lstat)
-beta1
-[1] -0.9500494
-beta0 <- mean(Boston$medv) - beta1* mean(Boston$lstat)
-beta0
-[1] 34.55384
+beta1 <- cov(Boston$medv, Boston$lstat)/var(Boston$lstat)<br>
+beta1<br>
+[1] -0.9500494<br>
+beta0 <- mean(Boston$medv) - beta1* mean(Boston$lstat)<br>
+beta0<br>
+[1] 34.55384<br>
 
-The variance of lstat
+The variance of lstat<br>
 
-mean((Boston$lstat- mean(Boston$lstat))^2)/n
-[1] 0.100581
+mean((Boston$lstat- mean(Boston$lstat))^2)/n<br>
+[1] 0.100581<br>
 
-was equal to
-mean(Boston$lstat^2)-(mean(Boston$lstat)^2)
-[1] 50.89398
+was equal to<br>
+mean(Boston$lstat^2)-(mean(Boston$lstat)^2)<br>
+[1] 50.89398<br>
 
-and note that it was equal to
-var(Boston$lstat)*(n-1)/n
-[1] 50.89398
+and note that it was equal to<br>
+var(Boston$lstat)*(n-1)/n<br>
+[1] 50.89398<br>
 
-as R computes variances and covariances by dividing them by n − 1 instead of n in order to provide unbiased estimates (it works at a sample level, not at the population level). The R function needed to fit linear regression models is lm()
+as R computes variances and covariances by dividing them by n − 1 instead of n in order to provide unbiased estimates (it works at a sample level, not at the population level). The R function needed to fit linear regression models is lm()<br>
 
-model <- lm(medv ~ lstat, data=Boston)
+model <- lm(medv ~ lstat, data=Boston)<br>
 
-The output provided an object (model) with many details.
+The output provided an object (model) with many details.<br>
 
-basic information: estimate of the coefficients
-model
+basic information: estimate of the coefficients<br>
+model<br>
 
-Much of the information were visualised through command summary
-summary(model)
+Much of the information were visualised through command summary<br>
+summary(model)<br>
 
-The output contained:
+The output contained:<br>
 
-• information about residuals
-• estimate, standard error, significance test on the parameters
-• information about the accuracy of the model
-• test F for the significance of all the parameters
+• information about residuals<br>
+• estimate, standard error, significance test on the parameters<br>
+• information about the accuracy of the model<br>
+• test F for the significance of all the parameters<br>
 
-Other information in model
+Other information in model<br>
 
-names(model)
-[1] "coefficients" "residuals" "effects" "rank" "fitted.values"
-[6] "assign" "qr" "df.residual" "xlevels" "call"
-[11] "terms" "model"
+names(model)<br>
+[1] "coefficients" "residuals" "effects" "rank" "fitted.values"<br>
+[6] "assign" "qr" "df.residual" "xlevels" "call"<br>
+[11] "terms" "model"<br>
 
-Then I  accessed the components of the model as follows:
+Then I  accessed the components of the model as follows:<br>
 
-model$coefficients
- (Intercept) lstat
- 34.5538409 -0.9500494
+model$coefficients<br>
+ (Intercept) lstat<br>
+ 34.5538409 -0.9500494<br>
  
-Model-based estimated fitted values
+Model-based estimated fitted values<br>
 
-est.values <- fitted(model)
+est.values <- fitted(model)<br>
 
-Observations, model-based estimated values and linear regression fit
+Observations, model-based estimated values and linear regression fit<br>
 
-plot(Boston$lstat, Boston$medv, pch=19, cex=0.5, xlab='% of lower status of the population', ylab='Median value')
+plot(Boston$lstat, Boston$medv, pch=19, cex=0.5, xlab='% of lower status of the population', ylab='Median value')<br>
 
-points(Boston$lstat, est.values, pch='x', col='green')
+points(Boston$lstat, est.values, pch='x', col='green')<br>
 
-abline(coef(model)[1], coef(model)[2], lty=2, col='red', lwd=3)
+abline(coef(model)[1], coef(model)[2], lty=2, col='red', lwd=3)<br>
 
 ![Model based estimated values   regression fit Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/3da626b4-5832-4819-bf12-561550bcffb1)
 
-Confidence interval at level 0.95 for β1
+Confidence interval at level 0.95 for β1<br>
 
-variance/covariance matrix associated to the parameter estimates
+variance/covariance matrix associated to the parameter estimates<br>
 vcov(model)
 (Intercept) lstat
 (Intercept) 0.31654954 -0.018983106
