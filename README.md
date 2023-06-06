@@ -145,57 +145,57 @@ abline(coef(model)[1], coef(model)[2], lty=2, col='red', lwd=3)<br>
 Confidence interval at level 0.95 for β1<br>
 
 variance/covariance matrix associated to the parameter estimates<br>
-vcov(model)
-(Intercept) lstat
-(Intercept) 0.31654954 -0.018983106
-lstat -0.01898311 0.001500278
-standard error
-se <- sqrt(diag(vcov(model)))
-se
-(Intercept) lstat
-0.56262735 0.03873342
+vcov(model)<br>
+(Intercept) lstat<br>
+(Intercept) 0.31654954 -0.018983106<br>
+lstat -0.01898311 0.001500278<br>
+standard error<br>
+se <- sqrt(diag(vcov(model)))<br>
+se<br>
+(Intercept) lstat<br>
+0.56262735 0.03873342<br>
 
-for beta1
-beta1-qt(0.975, df=n-2)*se[2]
-lstat
--1.026148
-beta1+qt(0.975, df=n-2)*se[2]
-lstat
--0.8739505
-or using the operator c()
-c(beta1-qt(0.975, df=n-2)*se[2], beta1+qt(0.975, df=n-2)*se[2])
-lstat lstat
--1.0261482 -0.8739505
+for beta1<br>
+beta1-qt(0.975, df=n-2)*se[2]<br>
+lstat<br>
+-1.026148<br>
+beta1+qt(0.975, df=n-2)*se[2]<br>
+lstat<br>
+-0.8739505<br>
+or using the operator c()<br>
+c(beta1-qt(0.975, df=n-2)*se[2], beta1+qt(0.975, df=n-2)*se[2])<br>
+lstat lstat<br>
+-1.0261482 -0.8739505<br>
 
-Given the large values of n, the standard normal approximation can be used as well
+Given the large values of n, the standard normal approximation can be used as well<br>
 
-c(beta1-qnorm(0.975)*se[2], beta1+qnorm(0.975)*se[2])
-lstat lstat
--1.0259655 -0.8741333
+c(beta1-qnorm(0.975)*se[2], beta1+qnorm(0.975)*se[2])<br>
+lstat lstat<br>
+-1.0259655 -0.8741333<br>
 
-Using R functionalities
+Using R functionalities<br>
 
-confint(model)
+confint(model)<br>
 
-2.5 % 97.5 %
-(Intercept) 33.448457 35.6592247
-lstat -1.026148 -0.8739505
-changed the confidence level, for example 90%
-confint(model, level=0.90)
-5 % 95 %
-(Intercept) 33.626697 35.4809847
-lstat -1.013877 -0.8862212
+2.5 % 97.5 %<br>
+(Intercept) 33.448457 35.6592247<br>
+lstat -1.026148 -0.8739505<br>
+changed the confidence level, for example 90%<br>
+confint(model, level=0.90)<br>
+5 % 95 %<br>
+(Intercept) 33.626697 35.4809847<br>
+lstat -1.013877 -0.8862212<br>
 
-Hypothesis test on H0 : β1 = −1 against H1 : β1 6 = −1 at significance level 0.05
-statistic.t <- (beta1-(-1))/se[2]
-statistic.t
-lstat
-1.289601
+Hypothesis test on H0 : β1 = −1 against H1 : β1 6 = −1 at significance level 0.05<br>
+statistic.t <- (beta1-(-1))/se[2]<br>
+statistic.t<br>
+lstat<br>
+1.289601<br>
 
-qt(0.025, df=n-2)
-[1] -1.964682
+qt(0.025, df=n-2)<br>
+[1] -1.964682<br>
 
-There was no empirical evidence against H0 at significance level 0.05.
+There was no empirical evidence against H0 at significance level 0.05.<br>
 
 p-value of the test
 2*min(pt(statistic.t, n-2), 1-pt(statistic.t, n-2))
