@@ -69,4 +69,259 @@ plot(Boston$medv, Boston$lstat, main='Dispersion plot', xlab='% of lower status 
 
 ![Dispersion plot Medv, lstat Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/169d243f-e348-4d54-98a4-f812f4eaeb2c)
 
+The plot shows an inverse relationship between the variables.
+Correlation between the variables
+
+cor(Boston$medv, Boston$lstat)
+[1] -0.7376627
+
+What can we conclude?
+Try to estimate a simple linear regression model
+
+medv = β0 + β1lstat + ε
+
+Construct it step by step
+
+beta1 <- cov(Boston$medv, Boston$lstat)/var(Boston$lstat)
+beta1
+[1] -0.9500494
+beta0 <- mean(Boston$medv) - beta1* mean(Boston$lstat)
+beta0
+[1] 34.55384
+
+The variance of lstat
+
+mean((Boston$lstat- mean(Boston$lstat))^2)/n
+[1] 0.100581
+
+is equal to
+mean(Boston$lstat^2)-(mean(Boston$lstat)^2)
+[1] 50.89398
+
+and note that it is equal to
+var(Boston$lstat)*(n-1)/n
+[1] 50.89398
+
+as R computes variances and covariances by dividing them by n − 1 instead of n in order to provide unbiased estimates (it works at a sample level, not at the population level). The R function needed to fit linear regression models is lm()
+
+model <- lm(medv ~ lstat, data=Boston)
+
+The output provides an object (model) with many details.
+
+basic information: estimate of the coefficients
+model
+
+Much of the information can be visualised through command summary
+summary(model)
+
+The output contains:
+• information about residuals
+• estimate, standard error, significance test on the parameters
+• information about the accuracy of the model
+• test F for the significance of all the parameters
+How can we comment on the output?
+Other information in model
+
+names(model)
+[1] "coefficients" "residuals" "effects" "rank" "fitted.values"
+[6] "assign" "qr" "df.residual" "xlevels" "call"
+[11] "terms" "model"
+
+How can we access the components?
+
+model$coefficients
+ (Intercept) lstat
+ 34.5538409 -0.9500494
+ 
+Model-based estimated fitted values
+
+est.values <- fitted(model)
+
+Observations, model-based estimated values and linear regression fit
+
+plot(Boston$lstat, Boston$medv, pch=19, cex=0.5, xlab='% of lower status of the population', ylab='Median value')
+
+points(Boston$lstat, est.values, pch='x', col='green')
+
+abline(coef(model)[1], coef(model)[2], lty=2, col='red', lwd=3)
+
+![Model based estimated values   regression fit Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/3da626b4-5832-4819-bf12-561550bcffb1)
+
+Confidence interval at level 0.95 for β1
+
+variance/covariance matrix associated to the parameter estimates
+vcov(model)
+(Intercept) lstat
+(Intercept) 0.31654954 -0.018983106
+lstat -0.01898311 0.001500278
+standard error
+se <- sqrt(diag(vcov(model)))
+se
+(Intercept) lstat
+0.56262735 0.03873342
+
+for beta1
+beta1-qt(0.975, df=n-2)*se[2]
+lstat
+-1.026148
+beta1+qt(0.975, df=n-2)*se[2]
+lstat
+-0.8739505
+or using the operator c()
+c(beta1-qt(0.975, df=n-2)*se[2], beta1+qt(0.975, df=n-2)*se[2])
+lstat lstat
+-1.0261482 -0.8739505
+
+Given the large values of n, the standard normal approximation can be used as wel
+
+c(beta1-qnorm(0.975)*se[2], beta1+qnorm(0.975)*se[2])
+lstat lstat
+-1.0259655 -0.8741333
+
+Using R functionalities
+
+confint(model)
+
+2.5 % 97.5 %
+(Intercept) 33.448457 35.6592247
+lstat -1.026148 -0.8739505
+change the confidence level, for example 90%
+confint(model, level=0.90)
+5 % 95 %
+(Intercept) 33.626697 35.4809847
+lstat -1.013877 -0.8862212
+
+Hypothesis test on H0 : β1 = −1 against H1 : β1 6 = −1 at significance level 0.05
+statistic.t <- (beta1-(-1))/se[2]
+statistic.t
+lstat
+1.289601
+
+qt(0.025, df=n-2)
+[1] -1.964682
+
+There is no empirical evidence against H0 at significance level 0.05.
+
+p-value of the test
+2*min(pt(statistic.t, n-2), 1-pt(statistic.t, n-2))
+[1] 0.1977807
+
+We confirm the previous result.
+Predictions on a new dataset
+
+predict(model, newdata=data.frame(list(lstat=c(5, 10, 25))))
+
+1 2 3
+29.80359 25.05335 10.80261
+
+# Predictions with prediction interval
+predict(model, newdata=data.frame(list(lstat=c(5, 10, 25))), interval='prediction')
+
+But, how can we judge our model? Consider the residuals.
+res <- residuals(model)
+
+Graphical evaluation of the residuals
+
+par(mfrow=c(2,2))
+hist(res, prob=TRUE)
+plot(res, pch=19, cex=0.5, ylab='Residuals')
+abline(h=0, lty=2)
+plot(est.values, res, pch=19, cex=0.5, xlab='Estimated values', ylab='Residuals')
+abline(h=0, lty=2)
+plot(Boston$lstat, res, ylab='Residuals', xlab='% of lower status of the population', pch=19, cex=0.5)
+abline(h=0, lty=2)
+
+![Residuals Boston Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/06bb7bf4-9fb0-4c40-9a1c-9822043b3406)
+
+Graphical evaluation of the standardized residuals
+
+par(mfrow=c(2,2))
+standard.res <- rstandard(model)
+hist(standard.res, prob=TRUE, xlab='Standardized residuals')
+plot(standard.res, pch=19, cex=0.5, ylab='Standardized residuals')
+abline(h=0, lty=2)
+plot(est.values, standard.res, pch=19, cex=0.5, xlab='Estimated values', ylab='Standardized residuals')
+abline(h=0, lty=2)
+plot(Boston$lstat, standard.res, ylab='Standardized residuals', xlab='% of lower status of the population', pch=19, cex=0.5)
+abline(h=0, lty=2)
+
+![Standardized Residuals Boston RplotRplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/a49b262f-12e7-4956-9a50-110a43dad6ae)
+
+Comments?
+
+Graphical evaluation of the accuracy of the model provided by R
+par(mfrow=c(2,2))
+plot(model)
+
+![Model Accuracy Check Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/f0e60cc5-452d-4630-981c-617194323027)
+
+plot(model, 4)
+
+![Boston Cook's Distance Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/7d0a3489-8737-4615-991e-66b5afcd1fae)
+
+Are there any anomalies? There are "suspicious" values that R indicates through the corresponding row number in the dataset, but they are not anomalous on the basis of the Cook’s distance (contour is zero).
+
+## 1.1 Multiple linear regression model
+
+Consider variable crim that includes the information about per capita crime rate by town.
+Relationship between crim and medv
+
+plot(Boston$crim, Boston$medv, ylab='Median value', xlab='Crime', pch=19, cex=0.5)
+
+
+![Multiple Linear Regression Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/95d8bfdd-30c1-47b5-adac-5db6912c907a)
+
+
+Estimation of the model
+                      medv = β0 + β1lstat + β2crim + ε
+                      
+model.mv <- lm(medv ~ lstat + crim, data=Boston)
+summary(model.mv)
+
+The significance of β2 is questionable.
+How do we interpret the parameter estimates? How is medv related to lstat?
+
+## 1.2 Model with polynomials
+
+Consider the model without crim. Given the dispersion plot between medv and lstat we can try to insert a quadratic term, that is, we estimate model
+                     medv = β0 + β1lstat + β2lstat2 + ε
+                     
+model2 <- lm(medv ~ lstat + I(lstat^2), data=Boston)
+or
+model2 <- update(model, .~.+I(lstat^2))
+summary(model2)
+
+The new covariate has an associated coefficient significantly different from 0.
+Compare the two models, with and without the quadratic term, using the F statistic
+
+rss0 <- (6.216^2)*504
+or
+sum(model$residuals^2)
+rss <- (5.524^2)*503
+f <- (rss0 - rss)/rss * (503/1)
+f
+[1] 135.183
+qf(0.95, 1, 503)
+[1] 3.860012
+There is empirical evidence against H0 that suggests
+to move to the simplest model with a single covariate
+p-value
+1-pf(f, 1, 503)
+[1] 0
+the p-value confirms the rejection of H0
+
+In R we can use function anova()
+
+anova(model, model2)
+
+Note that in this case statistic F corresponds to the square of statistic t for the significance of the coefficient associated to the square of lstat in model2.
+Residuals of the updated model
+
+par(mfrow=c(2,2))
+plot(model2)
+
+
+
+![Residauls of polynomial model 2 Rplot](https://github.com/adnantheanalyst/BostonHousingDataSet_R_Analysis/assets/16821246/52df728b-2506-4d77-9234-8ae0907b6c22)
+
 
